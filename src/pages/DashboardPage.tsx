@@ -1,72 +1,90 @@
-import { useMemo } from 'react'
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
+import { useMemo, useState } from 'react'
+import type { SortingState } from '@tanstack/react-table'
+import gamesData from '../data/games.json'
+import GameTable from '../components/GameTable'
+import FilterPanel from '../components/FilterPanel'
+import GameDetailDrawer from '../components/GameDetailDrawer'
+import AddGameForm from '../components/AddGameForm'
+import { DEFAULT_FILTERS, type FilterState, type Game } from '../types/game'
 
-// Trivial smoke-test row shape — confirms TanStack Table renders inside our
-// theme before the real collection grid is built.
-type PlaceholderRow = {
-  title: string
-  status: string
+function matchesFilters(game: Game, filters: FilterState): boolean {
+  if (filters.playerCount !== null) {
+    if (game.playerMin > filters.playerCount || game.playerMax < filters.playerCount) {
+      return false
+    }
+  }
+  if (game.playtimeMinutes < filters.playtimeMin || game.playtimeMinutes > filters.playtimeMax) {
+    return false
+  }
+  if (game.complexity > filters.maxComplexity) return false
+  if (filters.category !== 'All' && game.category !== filters.category) return false
+  if (filters.neverPlayedOnly && game.playCount !== 0) return false
+  return true
 }
 
-const placeholderData: PlaceholderRow[] = [
-  { title: 'TanStack Table', status: 'installed' },
-  { title: 'Routing', status: 'wired' },
-]
-
-const columnHelper = createColumnHelper<PlaceholderRow>()
-
-const columns = [
-  columnHelper.accessor('title', { header: 'Check' }),
-  columnHelper.accessor('status', { header: 'Status' }),
-]
-
 export default function DashboardPage() {
-  const data = useMemo(() => placeholderData, [])
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
+  const [games, setGames] = useState<Game[]>(gamesData as Game[])
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS)
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null)
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false)
+
+  const filteredGames = useMemo(
+    () => games.filter((game) => matchesFilters(game, filters)),
+    [games, filters],
+  )
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-      <p className="mt-2 text-muted-foreground">
-        Placeholder route for the "Pick Tonight's Game" dashboard. Table
-        rendering below confirms TanStack Table is installed and working.
-      </p>
-
-      <div className="mt-8 overflow-hidden rounded-lg bg-card">
-        <table className="w-full text-left">
-          <thead className="bg-popover">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="px-4 py-3 text-sm font-medium text-muted-foreground">
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-hover">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-3 text-sm">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <main className="mx-auto max-w-6xl px-6 py-10">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Dashboard</h1>
+          <p className="mt-2 text-muted-foreground">
+            Your collection at a glance — search, filter, and open a game for details.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsAddFormOpen(true)}
+          className="shrink-0 rounded-md bg-popover px-4 py-2 text-sm font-medium hover:bg-hover"
+        >
+          Add a game
+        </button>
       </div>
+
+      <div className="mt-6">
+        <input
+          type="text"
+          placeholder="Search by title…"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          className="w-full max-w-sm rounded-md bg-popover px-3 py-2 text-sm focus:outline-none sm:w-72"
+        />
+      </div>
+
+      <div className="mt-4">
+        <FilterPanel filters={filters} onChange={setFilters} />
+      </div>
+
+      <div className="mt-6">
+        <GameTable
+          games={filteredGames}
+          searchTerm={searchTerm}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          onSelectGame={setSelectedGame}
+        />
+      </div>
+
+      <GameDetailDrawer game={selectedGame} onClose={() => setSelectedGame(null)} />
+
+      {isAddFormOpen && (
+        <AddGameForm
+          onAdd={(game) => setGames((prev) => [...prev, game])}
+          onClose={() => setIsAddFormOpen(false)}
+        />
+      )}
     </main>
   )
 }
