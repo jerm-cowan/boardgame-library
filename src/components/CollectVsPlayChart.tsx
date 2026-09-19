@@ -87,11 +87,16 @@ export default function CollectVsPlayChart({ shares, highlighted, onHighlightCha
                 isHighlighted ? ' Highlighted.' : ''
               }`}
               onClick={() => onHighlightChange(highlighted === share.category ? null : share.category)}
-              className={`w-full rounded-lg p-3 text-left transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground/60 ${
-                isHighlighted ? 'bg-card' : 'bg-transparent hover:bg-card/60'
+              className={`w-full cursor-pointer rounded-lg border p-3 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground/60 ${
+                isHighlighted
+                  ? 'border-border bg-popover'
+                  : 'border-transparent bg-card hover:border-border hover:bg-popover/70'
               } ${isDimmed ? 'opacity-40' : 'opacity-100'}`}
             >
-              <div className="mb-1.5 text-sm font-medium">{share.category}</div>
+              <div className="mb-1.5 flex items-center gap-1.5 text-sm font-medium">
+                {share.category}
+                {isHighlighted && <span className="text-xs font-normal text-muted-foreground">(selected)</span>}
+              </div>
               <div className="space-y-1">
                 <BarRow
                   label="Owned"
