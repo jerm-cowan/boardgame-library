@@ -1,5 +1,14 @@
 import { useState } from 'react'
-import { COMPLEXITY_BOUNDS, GAME_CATEGORIES, type Game, type GameCategory } from '../types/game'
+import {
+  COMPLEXITY_BOUNDS,
+  GAME_CATEGORIES,
+  type Game,
+  type GameAudience,
+  type GameCategory,
+} from '../types/game'
+import { AUDIENCE_LABELS } from '../lib/recommend'
+
+const AUDIENCE_OPTIONS: GameAudience[] = ['family', 'adults', 'mixed']
 
 interface AddGameFormProps {
   onAdd: (game: Game) => void
@@ -13,6 +22,7 @@ type DraftState = {
   playerMax: string
   playtimeMinutes: string
   complexity: string
+  audience: GameAudience
 }
 
 const emptyDraft: DraftState = {
@@ -22,6 +32,7 @@ const emptyDraft: DraftState = {
   playerMax: '',
   playtimeMinutes: '',
   complexity: '',
+  audience: 'mixed',
 }
 
 export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
@@ -51,6 +62,7 @@ export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
       playCount: 0,
       lastPlayedDate: null,
       personalRating: 0,
+      audience: draft.audience,
     }
 
     onAdd(newGame)
@@ -148,6 +160,21 @@ export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
               ).map((value) => (
                 <option key={value} value={value}>
                   {value} / 5
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="text-muted-foreground">Best fit for</span>
+            <select
+              value={draft.audience}
+              onChange={(event) => update('audience', event.target.value as GameAudience)}
+              className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+            >
+              {AUDIENCE_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {AUDIENCE_LABELS[option]}
                 </option>
               ))}
             </select>

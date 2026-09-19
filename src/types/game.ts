@@ -8,6 +8,9 @@ export const GAME_CATEGORIES: GameCategory[] = [
   'Abstract',
 ]
 
+// Who a game fits well: 'mixed' means it works regardless of who's playing.
+export type GameAudience = 'family' | 'adults' | 'mixed'
+
 // Mirrors the shape of src/data/games.json — one dominant category per game.
 export interface Game {
   id: string
@@ -21,6 +24,7 @@ export interface Game {
   playCount: number
   lastPlayedDate: string | null
   personalRating: number
+  audience: GameAudience
 }
 
 export interface FilterState {
