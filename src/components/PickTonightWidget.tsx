@@ -93,7 +93,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
                 key={game.id}
                 type="button"
                 onClick={() => onSelectGame(game)}
-                className="flex flex-col gap-1 rounded-lg border border-border bg-hover p-4 text-left transition hover:border-transparent hover:bg-card"
+                className="flex flex-col gap-1 rounded-lg bg-card p-4 text-left transition hover:bg-hover"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium">{game.title}</span>
