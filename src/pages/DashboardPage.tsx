@@ -5,6 +5,8 @@ import GameTable from '../components/GameTable'
 import FilterPanel from '../components/FilterPanel'
 import GameDetailDrawer from '../components/GameDetailDrawer'
 import AddGameForm from '../components/AddGameForm'
+import DashboardKpis from '../components/DashboardKpis'
+import PickTonightWidget from '../components/PickTonightWidget'
 import { DEFAULT_FILTERS, type FilterState, type Game } from '../types/game'
 
 function matchesFilters(game: Game, filters: FilterState): boolean {
@@ -63,7 +65,15 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="mt-4">
+      <div className="mt-6">
+        <DashboardKpis games={games} />
+      </div>
+
+      <div className="mt-6">
+        <PickTonightWidget games={games} onSelectGame={setSelectedGame} />
+      </div>
+
+      <div className="mt-6">
         <FilterPanel filters={filters} onChange={setFilters} />
       </div>
 
