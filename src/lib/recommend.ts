@@ -68,26 +68,81 @@ function playerRangeText(game: Game): string {
     : `${game.playerMin}\u2013${game.playerMax} player`
 }
 
-function buildWhy(game: Game, mood: Mood, referenceDate: Date): string {
+const PLAYTIME_RANGE_MINUTES = 165 // matches PLAYTIME_BOUNDS spread (15–180)
+const COMPLEXITY_RANGE = 4 // matches COMPLEXITY_BOUNDS spread (1–5)
+
+function describeCategory(game: Game, comparative: boolean): string {
+  return comparative
+    ? `it's the only ${game.category} pick in this batch`
+    : `it's a ${game.category} game`
+}
+
+function describePlaytime(game: Game, comparative: boolean): string {
+  const length =
+    game.playtimeMinutes <= 45
+      ? `a quick ${game.playtimeMinutes}-minute game`
+      : game.playtimeMinutes >= 120
+        ? `a longer ${game.playtimeMinutes}-minute sit`
+        : `about ${game.playtimeMinutes} minutes`
+  return comparative ? `it runs ${length} compared to the others here` : `it's ${length}`
+}
+
+function describeComplexity(game: Game, comparative: boolean): string {
+  const weight =
+    game.complexity <= 2
+      ? `light, ${game.complexity}/5 complexity`
+      : game.complexity >= 4
+        ? `heavier, ${game.complexity}/5 complexity`
+        : `medium, ${game.complexity}/5 complexity`
+  return comparative ? `it's the ${weight} option of the bunch` : `it's ${weight}`
+}
+
+// Picks whichever secondary trait most sets this game apart from the other recommended
+// games (falling back to whichever trait is notable in isolation for a single result).
+function buildDistinguishingClause(game: Game, others: Game[]): string {
+  const comparative = others.length > 0
+
+  if (comparative) {
+    const uniqueCategory = others.every((other) => other.category !== game.category)
+    if (uniqueCategory) return describeCategory(game, true)
+
+    const avgPlaytime = mean(others.map((other) => other.playtimeMinutes))
+    const avgComplexity = mean(others.map((other) => other.complexity))
+    const playtimeGap = Math.abs(game.playtimeMinutes - avgPlaytime) / PLAYTIME_RANGE_MINUTES
+    const complexityGap = Math.abs(game.complexity - avgComplexity) / COMPLEXITY_RANGE
+
+    if (playtimeGap >= complexityGap && playtimeGap >= 0.12) return describePlaytime(game, true)
+    if (complexityGap > playtimeGap && complexityGap >= 0.2) return describeComplexity(game, true)
+  }
+
+  // No standout gap versus the other picks (or nothing to compare against) — describe
+  // whichever trait is most notable for this game on its own.
+  if (game.complexity <= 2 || game.complexity >= 4) return describeComplexity(game, false)
+  if (game.playtimeMinutes <= 45 || game.playtimeMinutes >= 120) return describePlaytime(game, false)
+  return describeCategory(game, false)
+}
+
+function buildWhy(game: Game, mood: Mood, referenceDate: Date, group: Game[]): string {
   const range = playerRangeText(game)
   const recency = describeRecency(game.lastPlayedDate, referenceDate)
+  const others = group.filter((other) => other.id !== game.id)
+  const distinguisher = buildDistinguishingClause(game, others)
 
   if (mood === 'familiar') {
-    return `Your highest-rated ${range} game among the ones you play often (${game.personalRating}/10, played ${game.playCount} times), but ${recency}.`
+    return `Your highest-rated ${range} game among the ones you play often (${game.personalRating}/10, played ${game.playCount} times), but ${recency}. Plus, ${distinguisher}.`
   }
 
   if (mood === 'new') {
     if (game.playCount === 0) {
-      return `You've never tried this one, and it fits your group size${
-        game.complexity <= 2 ? ' and skews easy' : ''
-      }.`
+      return `You've never tried this one, and it fits your group size — ${distinguisher}.`
     }
-    return `Only played ${game.playCount} time${game.playCount === 1 ? '' : 's'} so far — still fresh, and it fits your group size (rated ${game.personalRating}/10).`
+    return `Only played ${game.playCount} time${game.playCount === 1 ? '' : 's'} so far — still fresh, and it fits your group size (rated ${game.personalRating}/10). Also, ${distinguisher}.`
   }
 
   // surprise
-  return `Rated ${game.personalRating}/10 — one of your best — but ${recency}. A genuine neglected-shelf pick.`
+  return `Rated ${game.personalRating}/10 — one of your best — but ${recency}. A genuine neglected-shelf pick, and ${distinguisher}.`
 }
+
 
 export function recommend(
   games: Game[],
@@ -124,9 +179,11 @@ export function recommend(
     )
   }
 
-  const recommendations = sorted
-    .slice(0, 3)
-    .map((game) => ({ game, why: buildWhy(game, mood, referenceDate) }))
+  const topGames = sorted.slice(0, 3)
+  const recommendations = topGames.map((game) => ({
+    game,
+    why: buildWhy(game, mood, referenceDate, topGames),
+  }))
 
   return { candidateCount: candidates.length, recommendations }
 }
