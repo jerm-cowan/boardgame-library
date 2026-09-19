@@ -27,7 +27,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
   )
 
   return (
-    <section className="rounded-xl border border-border bg-popover p-6 shadow-lg shadow-black/20">
+    <section className="rounded-xl border border-border bg-card p-6 shadow-lg shadow-black/20">
       <div>
         <h2 className="text-xl font-semibold">Pick Tonight's Game</h2>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -44,7 +44,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
             max={12}
             value={groupSize}
             onChange={(event) => setGroupSize(Math.max(1, Number(event.target.value) || 1))}
-            className="w-24 rounded-md bg-hover px-2 py-1.5 focus:outline-none"
+            className="w-24 rounded-md bg-popover px-2 py-1.5 focus:outline-none"
           />
         </label>
 
@@ -53,7 +53,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
           <select
             value={audience}
             onChange={(event) => setAudience(event.target.value as AudienceSelection)}
-            className="rounded-md bg-hover px-2 py-1.5 focus:outline-none"
+            className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
           >
             {AUDIENCE_OPTIONS.map((option) => (
               <option key={option} value={option}>
@@ -68,7 +68,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
           <select
             value={mood}
             onChange={(event) => setMood(event.target.value as Mood)}
-            className="rounded-md bg-hover px-2 py-1.5 focus:outline-none"
+            className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
           >
             {MOOD_OPTIONS.map((option) => (
               <option key={option} value={option}>
@@ -81,7 +81,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
 
       <div className="mt-6">
         {result.candidateCount === 0 ? (
-          <div className="rounded-lg bg-hover p-4 text-sm text-muted-foreground">
+          <div className="rounded-lg bg-popover p-4 text-sm text-muted-foreground">
             No owned games fit {groupSize} player{groupSize === 1 ? '' : 's'} and{' '}
             {AUDIENCE_LABELS[audience].toLowerCase()}. Try a different group size or audience, or
             add a game that matches.
@@ -93,7 +93,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
                 key={game.id}
                 type="button"
                 onClick={() => onSelectGame(game)}
-                className="flex flex-col gap-1 rounded-lg border border-border bg-hover p-4 text-left transition hover:border-white/20 hover:brightness-110"
+                className="flex flex-col gap-1 rounded-lg bg-popover p-4 text-left transition hover:brightness-110"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-medium">{game.title}</span>
