@@ -32,7 +32,7 @@ export default function CollectionStoryPage() {
 
       <div className="space-y-14">
         <CollectionSnapshot totalGames={games.length} breakdown={breakdown} complexity={complexity} />
-        <CollectVsPlayBeat shares={shares} />
+        <CollectVsPlayBeat shares={shares} neglectedGames={neglected} />
         <NeglectedShelf games={neglected} />
         <StoryTakeaway spotlightGame={neglected[0] ?? null} />
       </div>

@@ -6,6 +6,8 @@ type ViewMode = 'owned' | 'played'
 
 interface CollectVsPlayChartProps {
   shares: CategoryShare[]
+  highlighted: GameCategory | null
+  onHighlightChange: (category: GameCategory | null) => void
 }
 
 const VIEW_LABELS: Record<ViewMode, string> = {
@@ -46,9 +48,8 @@ function BarRow({
   )
 }
 
-export default function CollectVsPlayChart({ shares }: CollectVsPlayChartProps) {
+export default function CollectVsPlayChart({ shares, highlighted, onHighlightChange }: CollectVsPlayChartProps) {
   const [view, setView] = useState<ViewMode>('owned')
-  const [highlighted, setHighlighted] = useState<GameCategory | null>(null)
 
   const sorted = useMemo(() => {
     const key = view === 'owned' ? 'collectionShare' : 'playShare'
@@ -85,7 +86,7 @@ export default function CollectVsPlayChart({ shares }: CollectVsPlayChartProps) 
               aria-label={`${share.category}: ${Math.round(share.collectionShare)}% of collection, ${Math.round(share.playShare)}% of play share.${
                 isHighlighted ? ' Highlighted.' : ''
               }`}
-              onClick={() => setHighlighted((prev) => (prev === share.category ? null : share.category))}
+              onClick={() => onHighlightChange(highlighted === share.category ? null : share.category)}
               className={`w-full rounded-lg p-3 text-left transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground/60 ${
                 isHighlighted ? 'bg-card' : 'bg-transparent hover:bg-card/60'
               } ${isDimmed ? 'opacity-40' : 'opacity-100'}`}
