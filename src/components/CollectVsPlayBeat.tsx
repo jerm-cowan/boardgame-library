@@ -89,7 +89,7 @@ export default function CollectVsPlayBeat({ shares, games }: CollectVsPlayBeatPr
         <p className="sr-only">
           Collection share versus play share by category: {summary}.
         </p>
-        <div className="grid gap-6 md:grid-cols-[1fr_2fr]">
+        <div className="grid gap-6 md:grid-cols-[2fr_3fr]">
           <div>
             <CollectVsPlayChart shares={shares} highlighted={selected} onHighlightChange={setSelected} />
           </div>
