@@ -1,5 +1,5 @@
 import type { Game, GameAudience } from '../types/game'
-import { daysSince } from './kpis'
+import { daysSince, mean } from './kpis'
 
 export type Mood = 'familiar' | 'new' | 'surprise'
 export type AudienceSelection = GameAudience
@@ -38,9 +38,16 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
 }
 
-function mean(values: number[]): number {
-  if (values.length === 0) return 0
-  return values.reduce((sum, value) => sum + value, 0) / values.length
+// Same neglect concept the Collection Story's neglected-shelf beat reuses: games rated at
+// or above the pool's average rating, so a mediocre pool doesn't surface middling games.
+export function highRatedPool(games: Game[]): Game[] {
+  const avgRating = mean(games.map((game) => game.personalRating))
+  const highlyRated = games.filter((game) => game.personalRating >= avgRating)
+  return highlyRated.length > 0 ? highlyRated : games
+}
+
+export function sortByFewestPlaysThenRating(games: Game[]): Game[] {
+  return [...games].sort((a, b) => a.playCount - b.playCount || b.personalRating - a.personalRating)
 }
 
 // A "mixed group" imposes no audience restriction; family/adults selections also accept
@@ -350,12 +357,8 @@ export function recommend(
       (a, b) => a.playCount - b.playCount || b.personalRating - a.personalRating,
     )
   } else {
-    const avgRating = mean(candidates.map((game) => game.personalRating))
-    const highlyRated = candidates.filter((game) => game.personalRating >= avgRating)
-    pool = highlyRated.length > 0 ? highlyRated : candidates
-    sorted = [...pool].sort(
-      (a, b) => a.playCount - b.playCount || b.personalRating - a.personalRating,
-    )
+    pool = highRatedPool(candidates)
+    sorted = sortByFewestPlaysThenRating(pool)
   }
 
   const topGames = sorted.slice(0, 3)

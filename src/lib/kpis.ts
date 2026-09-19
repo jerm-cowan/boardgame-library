@@ -7,6 +7,11 @@ export function daysSince(dateStr: string, referenceDate: Date = new Date()): nu
   return Math.floor((referenceDate.getTime() - played.getTime()) / (1000 * 60 * 60 * 24))
 }
 
+export function mean(values: number[]): number {
+  if (values.length === 0) return 0
+  return values.reduce((sum, value) => sum + value, 0) / values.length
+}
+
 export interface DashboardKpiSummary {
   totalGames: number
   neverPlayedCount: number
