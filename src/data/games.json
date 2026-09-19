@@ -450,7 +450,7 @@
   {
     "id": "g033",
     "title": "Quarantine Zero",
-    "category": "Cooperative",
+    "category": "Strategy",
     "playerMin": 1,
     "playerMax": 4,
     "playtimeMinutes": 73,
@@ -464,7 +464,7 @@
   {
     "id": "g034",
     "title": "The Last Lighthouse",
-    "category": "Cooperative",
+    "category": "Family",
     "playerMin": 2,
     "playerMax": 5,
     "playtimeMinutes": 57,
@@ -520,7 +520,7 @@
   {
     "id": "g038",
     "title": "Outbreak Protocol",
-    "category": "Cooperative",
+    "category": "Party",
     "playerMin": 1,
     "playerMax": 4,
     "playtimeMinutes": 56,
@@ -534,7 +534,7 @@
   {
     "id": "g039",
     "title": "Skyward Bound",
-    "category": "Cooperative",
+    "category": "Strategy",
     "playerMin": 1,
     "playerMax": 4,
     "playtimeMinutes": 44,
@@ -576,7 +576,7 @@
   {
     "id": "g042",
     "title": "Quiet Lines",
-    "category": "Abstract",
+    "category": "Strategy",
     "playerMin": 2,
     "playerMax": 2,
     "playtimeMinutes": 32,
@@ -590,7 +590,7 @@
   {
     "id": "g043",
     "title": "Fracture",
-    "category": "Abstract",
+    "category": "Strategy",
     "playerMin": 2,
     "playerMax": 2,
     "playtimeMinutes": 40,
@@ -604,7 +604,7 @@
   {
     "id": "g044",
     "title": "Nine Pillars",
-    "category": "Abstract",
+    "category": "Strategy",
     "playerMin": 2,
     "playerMax": 4,
     "playtimeMinutes": 44,
@@ -632,7 +632,7 @@
   {
     "id": "g046",
     "title": "Monolith",
-    "category": "Abstract",
+    "category": "Family",
     "playerMin": 2,
     "playerMax": 4,
     "playtimeMinutes": 36,
@@ -660,7 +660,7 @@
   {
     "id": "g048",
     "title": "Vertex",
-    "category": "Abstract",
+    "category": "Strategy",
     "playerMin": 2,
     "playerMax": 3,
     "playtimeMinutes": 24,
@@ -688,7 +688,7 @@
   {
     "id": "g050",
     "title": "Two-Color Theorem",
-    "category": "Abstract",
+    "category": "Family",
     "playerMin": 2,
     "playerMax": 3,
     "playtimeMinutes": 30,
