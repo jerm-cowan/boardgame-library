@@ -16,13 +16,17 @@ export default function StoryTakeaway({ spotlightGame }: StoryTakeawayProps) {
           <>
             You don't need to buy anything new tonight —{' '}
             <strong className="text-foreground">{spotlightGame.title}</strong> is already on your
-            shelf, already rated {spotlightGame.personalRating}/10, and overdue for a rematch.
+            shelf, already rated {spotlightGame.personalRating}/10, and{' '}
+            {spotlightGame.playCount === 0
+              ? "hasn't even hit the table yet"
+              : 'overdue for another play'}
+            .
           </>
         ) : (
           "You don't need to buy anything new — your shelf already holds games worth revisiting."
         )}{' '}
         Next time you're not sure what to play, try the "Surprise me" option on the dashboard's
-        picker — it's built to surface exactly these overlooked favorites.
+        picker — it's built to surface exactly these overlooked gems.
       </p>
       <Link
         to="/dashboard"
