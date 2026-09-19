@@ -62,7 +62,9 @@ export function computeCategoryShares(games: Game[]): CategoryShare[] {
 }
 
 // Same neglect concept as the recommender's "Surprise me": rated at/above the pool's
-// average rating, ranked by fewest plays first, then highest rating.
-export function getNeglectedShelf(games: Game[], limit = 5): Game[] {
-  return sortByFewestPlaysThenRating(highRatedPool(games)).slice(0, limit)
+// average rating, ranked by fewest plays first, then highest rating. Passing a category
+// scopes the pool to that category alone, so "neglected" is judged against its own peers.
+export function getNeglectedShelf(games: Game[], limit = 5, category?: GameCategory): Game[] {
+  const pool = category ? games.filter((game) => game.category === category) : games
+  return sortByFewestPlaysThenRating(highRatedPool(pool)).slice(0, limit)
 }

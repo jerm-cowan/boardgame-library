@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 import CollectVsPlayChart from './CollectVsPlayChart'
-import type { CategoryShare } from '../lib/story'
+import NeglectedShelf from './NeglectedShelf'
+import { getNeglectedShelf, type CategoryShare } from '../lib/story'
 import type { Game, GameCategory } from '../types/game'
 
 interface CollectVsPlayBeatProps {
   shares: CategoryShare[]
-  neglectedGames: Game[]
+  games: Game[]
 }
 
 interface GapDescription {
@@ -40,7 +41,7 @@ function describeGap(share: CategoryShare, allShares: CategoryShare[]): GapDescr
   }
 }
 
-export default function CollectVsPlayBeat({ shares, neglectedGames }: CollectVsPlayBeatProps) {
+export default function CollectVsPlayBeat({ shares, games }: CollectVsPlayBeatProps) {
   const [selected, setSelected] = useState<GameCategory | null>(null)
 
   const summary = useMemo(
@@ -55,7 +56,10 @@ export default function CollectVsPlayBeat({ shares, neglectedGames }: CollectVsP
   )
 
   const selectedShare = selected ? shares.find((share) => share.category === selected) ?? null : null
-  const hasNeglected = selected !== null && neglectedGames.some((game) => game.category === selected)
+  const neglected = useMemo(
+    () => getNeglectedShelf(games, 5, selected ?? undefined),
+    [games, selected],
+  )
 
   return (
     <section aria-labelledby="beat-collect-vs-play-heading" className="space-y-4">
@@ -73,7 +77,7 @@ export default function CollectVsPlayBeat({ shares, neglectedGames }: CollectVsP
                 {balanced ? 'and' : gap > 0 ? 'but only' : 'yet'}{' '}
                 <strong className="text-foreground">{playedPct}%</strong> of your actual play time
                 {!balanced && gap < 0 ? ', punching above its weight' : ''} — {magnitude}.
-                {hasNeglected ? ' See which games below.' : ''}
+                {neglected.length > 0 ? ' See below.' : ''}
               </>
             )
           })()
@@ -85,7 +89,24 @@ export default function CollectVsPlayBeat({ shares, neglectedGames }: CollectVsP
         <p className="sr-only">
           Collection share versus play share by category: {summary}.
         </p>
-        <CollectVsPlayChart shares={shares} highlighted={selected} onHighlightChange={setSelected} />
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <CollectVsPlayChart shares={shares} highlighted={selected} onHighlightChange={setSelected} />
+          </div>
+          <div>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Neglected shelf
+            </h3>
+            <NeglectedShelf
+              games={neglected}
+              emptyMessage={
+                selected
+                  ? `Nothing neglected here — you play your ${selected} games!`
+                  : 'Nothing neglected here.'
+              }
+            />
+          </div>
+        </div>
       </div>
     </section>
   )
