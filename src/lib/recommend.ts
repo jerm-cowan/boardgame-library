@@ -125,7 +125,7 @@ function lowerFirst(text: string): string {
 function describeCategory(game: Game, comparative: boolean, seed: number): string {
   const options = comparative
     ? [
-        `your only ${game.category.toLowerCase()} option tonight`,
+        `your only ${game.category.toLowerCase()} option today`,
         `nothing else on the list matches that ${game.category.toLowerCase()} vibe`,
         `the lone ${game.category.toLowerCase()} game in the mix`,
       ]
@@ -138,7 +138,7 @@ function describePlaytime(game: Game, comparative: boolean, seed: number): strin
   if (minutes <= 45) {
     const options = comparative
       ? [
-          `the quick one tonight at ${minutes} minutes`,
+          `the quick one today at ${minutes} minutes`,
           `a lighter time commitment — just ${minutes} minutes`,
           `done in about ${minutes} minutes, faster than the rest`,
         ]
@@ -148,7 +148,7 @@ function describePlaytime(game: Game, comparative: boolean, seed: number): strin
   if (minutes >= 120) {
     const options = comparative
       ? [
-          `the longer sit tonight at ${minutes} minutes`,
+          `the longer sit today at ${minutes} minutes`,
           `worth blocking off real time for — about ${minutes} minutes`,
           `a bigger commitment than the others at ${minutes} minutes`,
         ]
@@ -166,7 +166,7 @@ function describeComplexity(game: Game, comparative: boolean, seed: number): str
   if (level <= 2) {
     const options = comparative
       ? [
-          `the easiest one to teach tonight`,
+          `the easiest one to teach today`,
           `noticeably lighter at ${level}/5 complexity`,
           `the breeziest pick of the bunch`,
         ]

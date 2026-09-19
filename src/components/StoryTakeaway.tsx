@@ -14,7 +14,7 @@ export default function StoryTakeaway({ spotlightGame }: StoryTakeawayProps) {
       <p className="text-muted-foreground">
         {spotlightGame ? (
           <>
-            You don't need to buy anything new tonight —{' '}
+            You don't need to buy anything new today —{' '}
             <strong className="text-foreground">{spotlightGame.title}</strong> is already on your
             shelf, already rated {spotlightGame.personalRating}/10, and{' '}
             {spotlightGame.playCount === 0
@@ -25,14 +25,14 @@ export default function StoryTakeaway({ spotlightGame }: StoryTakeawayProps) {
         ) : (
           "You don't need to buy anything new — your shelf already holds games worth revisiting."
         )}{' '}
-        Next time you're not sure what to play, try the "Surprise me" option on the dashboard's
-        picker — it's built to surface exactly these overlooked gems.
+        Next time you're not sure what to play, try the "Surprise me" mood in Pick Today's Game —
+        it's built to surface exactly these overlooked gems.
       </p>
       <Link
         to="/dashboard"
         className="inline-block rounded-md bg-popover px-4 py-2 text-sm font-medium hover:bg-hover"
       >
-        Go pick tonight's game
+        Go pick today's game
       </Link>
     </section>
   )

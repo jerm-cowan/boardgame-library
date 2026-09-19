@@ -29,7 +29,7 @@ Total games · Never played · Recently played · Most-played category
 **Filters (1 consolidated panel):**
 Player count · Playtime · Complexity · Category (status shown as a toggle, not a separate filter)
 
-**Flagship widget — "Pick Tonight's Game":**
+**Flagship widget — "Pick Today's Game":**
 - Input 1: Group size (number of players)
 - Input 2: Who's playing — Family/kids-friendly · Adults only · Mixed group
 - Input 3: Mood — Familiar favorite · Something new-to-us · Surprise me (neglected pick). The recommender stays at these 3 inputs; playtime is not a 4th input — it's a recurring through-line fact used inside the why-line (see below).
@@ -45,7 +45,7 @@ The story is the understanding layer — a curated narrative over the full datas
 **Narrative sequence (3 beats):**
 1. **Snapshot** — size and character of the collection
 2. **What I collect vs. what I actually play** — the core contradiction, merged with the neglected shelf into one two-column section: an owned/played comparison chart (left) and a list of specific highly-rated, rarely-played games (right). Clicking a category in the chart filters the neglected-shelf list to that category's own neglected games (or shows a brief empty state if it has none), so the aggregate gap and its specific games stay next to each other rather than requiring separate scroll-past beats.
-3. **The takeaway** — a nudge back to the dashboard (e.g., "Next time, try the Surprise Me picker")
+3. **The takeaway** — a nudge back to the dashboard (e.g., "Next time, try the 'Surprise me' mood in Pick Today's Game")
 
 **Interactions (2, kept purposeful):** toggle Owned Games / Played Games, and click a category to both highlight it in the chart and filter the neglected-shelf list beside it. No dashboard-filter handoff or time-period selector for MVP — explicitly deferred.
 
