@@ -87,7 +87,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
             add a game that matches.
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
             {result.recommendations.map(({ game, why }) => (
               <button
                 key={game.id}
