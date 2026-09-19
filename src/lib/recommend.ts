@@ -16,9 +16,14 @@ export const AUDIENCE_LABELS: Record<AudienceSelection, string> = {
   mixed: 'Mixed group',
 }
 
+export interface WhySegment {
+  text: string
+  emphasis?: boolean
+}
+
 export interface Recommendation {
   game: Game
-  why: string
+  why: WhySegment[]
 }
 
 export interface RecommendationResult {
@@ -53,13 +58,30 @@ function getCandidates(games: Game[], groupSize: number, audience: AudienceSelec
   return games.filter((game) => matchesGroupSize(game, groupSize) && matchesAudience(game, audience))
 }
 
-function describeRecency(lastPlayedDate: string | null, referenceDate: Date): string {
+function daysSincePhrase(days: number, seed: number): string {
+  const options = [
+    `you last played it ${days} day${days === 1 ? '' : 's'} ago`,
+    `your last session was just ${days} day${days === 1 ? '' : 's'} back`,
+    `it's only been ${days} day${days === 1 ? '' : 's'} since you played it`,
+  ]
+  return pick(options, seed)
+}
+
+function monthsSincePhrase(months: number, seed: number): string {
+  const options = [
+    `you haven't played it in ${months} month${months === 1 ? '' : 's'}`,
+    `it's been ${months} month${months === 1 ? '' : 's'} since your last game`,
+    `your last session was ${months} month${months === 1 ? '' : 's'} back`,
+  ]
+  return pick(options, seed)
+}
+
+function describeRecency(lastPlayedDate: string | null, referenceDate: Date, seed: number): string {
   if (lastPlayedDate === null) return "you've never played it"
   const days = daysSince(lastPlayedDate, referenceDate)
   if (days <= 0) return 'you played it today'
-  if (days < 30) return `you last played it ${days} day${days === 1 ? '' : 's'} ago`
-  const months = Math.round(days / 30)
-  return `you haven't played it in ${months} month${months === 1 ? '' : 's'}`
+  if (days < 30) return daysSincePhrase(days, seed)
+  return monthsSincePhrase(Math.round(days / 30), seed)
 }
 
 function playerRangeText(game: Game): string {
@@ -71,76 +93,233 @@ function playerRangeText(game: Game): string {
 const PLAYTIME_RANGE_MINUTES = 165 // matches PLAYTIME_BOUNDS spread (15–180)
 const COMPLEXITY_RANGE = 4 // matches COMPLEXITY_BOUNDS spread (1–5)
 
-function describeCategory(game: Game, comparative: boolean): string {
-  return comparative
-    ? `it's the only ${game.category} pick in this batch`
-    : `it's a ${game.category} game`
+function hashString(value: string): number {
+  let hash = 0
+  for (let i = 0; i < value.length; i++) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0
+  }
+  return hash
 }
 
-function describePlaytime(game: Game, comparative: boolean): string {
-  const length =
-    game.playtimeMinutes <= 45
-      ? `a quick ${game.playtimeMinutes}-minute game`
-      : game.playtimeMinutes >= 120
-        ? `a longer ${game.playtimeMinutes}-minute sit`
-        : `about ${game.playtimeMinutes} minutes`
-  return comparative ? `it runs ${length} compared to the others here` : `it's ${length}`
+function pick<T>(options: T[], seed: number): T {
+  return options[seed % options.length]
 }
 
-function describeComplexity(game: Game, comparative: boolean): string {
-  const weight =
-    game.complexity <= 2
-      ? `light, ${game.complexity}/5 complexity`
-      : game.complexity >= 4
-        ? `heavier, ${game.complexity}/5 complexity`
-        : `medium, ${game.complexity}/5 complexity`
-  return comparative ? `it's the ${weight} option of the bunch` : `it's ${weight}`
+function capitalize(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-// Picks whichever secondary trait most sets this game apart from the other recommended
-// games (falling back to whichever trait is notable in isolation for a single result).
-function buildDistinguishingClause(game: Game, others: Game[]): string {
-  const comparative = others.length > 0
+function lowerFirst(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1)
+}
 
-  if (comparative) {
-    const uniqueCategory = others.every((other) => other.category !== game.category)
-    if (uniqueCategory) return describeCategory(game, true)
+// Standalone noun-phrase fragments describing one trait of a game — written so they read
+// naturally whether they land mid-sentence or open the sentence (via capitalize()).
+function describeCategory(game: Game, comparative: boolean, seed: number): string {
+  const options = comparative
+    ? [
+        `your only ${game.category.toLowerCase()} option tonight`,
+        `nothing else on the list matches that ${game.category.toLowerCase()} vibe`,
+        `the lone ${game.category.toLowerCase()} game in the mix`,
+      ]
+    : [`a ${game.category.toLowerCase()} game`, `leaning into the ${game.category.toLowerCase()} category`]
+  return pick(options, seed)
+}
 
-    const avgPlaytime = mean(others.map((other) => other.playtimeMinutes))
-    const avgComplexity = mean(others.map((other) => other.complexity))
-    const playtimeGap = Math.abs(game.playtimeMinutes - avgPlaytime) / PLAYTIME_RANGE_MINUTES
-    const complexityGap = Math.abs(game.complexity - avgComplexity) / COMPLEXITY_RANGE
+function describePlaytime(game: Game, comparative: boolean, seed: number): string {
+  const minutes = game.playtimeMinutes
+  if (minutes <= 45) {
+    const options = comparative
+      ? [
+          `the quick one tonight at ${minutes} minutes`,
+          `a lighter time commitment — just ${minutes} minutes`,
+          `done in about ${minutes} minutes, faster than the rest`,
+        ]
+      : [`a quick ${minutes}-minute game`, `over in about ${minutes} minutes`]
+    return pick(options, seed)
+  }
+  if (minutes >= 120) {
+    const options = comparative
+      ? [
+          `the longer sit tonight at ${minutes} minutes`,
+          `worth blocking off real time for — about ${minutes} minutes`,
+          `a bigger commitment than the others at ${minutes} minutes`,
+        ]
+      : [`a longer ${minutes}-minute sit`, `settling in for about ${minutes} minutes`]
+    return pick(options, seed)
+  }
+  const options = comparative
+    ? [`a mid-length pick at ${minutes} minutes`, `right in the middle at ${minutes} minutes`]
+    : [`about ${minutes} minutes long`, `a solid ${minutes}-minute game`]
+  return pick(options, seed)
+}
 
-    if (playtimeGap >= complexityGap && playtimeGap >= 0.12) return describePlaytime(game, true)
-    if (complexityGap > playtimeGap && complexityGap >= 0.2) return describeComplexity(game, true)
+function describeComplexity(game: Game, comparative: boolean, seed: number): string {
+  const level = game.complexity
+  if (level <= 2) {
+    const options = comparative
+      ? [
+          `the easiest one to teach tonight`,
+          `noticeably lighter at ${level}/5 complexity`,
+          `the breeziest pick of the bunch`,
+        ]
+      : [`light, ${level}/5 complexity`, `easy to teach at ${level}/5 complexity`]
+    return pick(options, seed)
+  }
+  if (level >= 4) {
+    const options = comparative
+      ? [
+          `the heaviest game on the list at ${level}/5 complexity`,
+          `bringing more crunch than the others at ${level}/5`,
+          `the meatiest pick of the three`,
+        ]
+      : [`hefty, ${level}/5 complexity`, `a heavier ${level}/5-complexity game`]
+    return pick(options, seed)
+  }
+  const options = comparative
+    ? [`middle-of-the-road at ${level}/5 complexity`]
+    : [`medium complexity (${level}/5)`]
+  return pick(options, seed)
+}
+
+type Dimension = 'category' | 'playtime' | 'complexity'
+interface DimensionAssignment {
+  dimension: Dimension
+  comparative: boolean
+}
+
+// Assigns each game in a recommended set its own distinguishing trait so no two cards lean
+// on the same attribute (e.g. two games both being described by "time" even though only one
+// can genuinely be the standout on time). Unique categories are claimed first since that's a
+// binary fact; playtime/complexity are then handed out exclusively, most-extreme game first.
+function assignDistinguishers(group: Game[]): Map<string, DimensionAssignment> {
+  const assignments = new Map<string, DimensionAssignment>()
+  if (group.length <= 1) return assignments
+
+  const claimed = new Set<string>()
+  for (const game of group) {
+    const uniqueCategory = group.every((other) => other.id === game.id || other.category !== game.category)
+    if (uniqueCategory) {
+      assignments.set(game.id, { dimension: 'category', comparative: true })
+      claimed.add(game.id)
+    }
   }
 
-  // No standout gap versus the other picks (or nothing to compare against) — describe
-  // whichever trait is most notable for this game on its own.
-  if (game.complexity <= 2 || game.complexity >= 4) return describeComplexity(game, false)
-  if (game.playtimeMinutes <= 45 || game.playtimeMinutes >= 120) return describePlaytime(game, false)
-  return describeCategory(game, false)
+  const groupAvgPlaytime = mean(group.map((g) => g.playtimeMinutes))
+  const groupAvgComplexity = mean(group.map((g) => g.complexity))
+  const remaining = group.filter((g) => !claimed.has(g.id))
+  const scored = remaining
+    .map((game) => ({
+      game,
+      playtimeGap: Math.abs(game.playtimeMinutes - groupAvgPlaytime) / PLAYTIME_RANGE_MINUTES,
+      complexityGap: Math.abs(game.complexity - groupAvgComplexity) / COMPLEXITY_RANGE,
+    }))
+    .sort((a, b) => Math.max(b.playtimeGap, b.complexityGap) - Math.max(a.playtimeGap, a.complexityGap))
+
+  const usedDimensions = new Set<Dimension>()
+  for (const { game, playtimeGap, complexityGap } of scored) {
+    const preference: Dimension[] =
+      playtimeGap >= complexityGap ? ['playtime', 'complexity'] : ['complexity', 'playtime']
+    const chosen = preference.find((dimension) => !usedDimensions.has(dimension))
+    if (chosen) {
+      assignments.set(game.id, { dimension: chosen, comparative: true })
+      usedDimensions.add(chosen)
+    } else {
+      // Every exclusive slot is taken — describe the game plainly rather than repeating
+      // another game's "stands out" claim.
+      assignments.set(game.id, { dimension: 'category', comparative: false })
+    }
+  }
+
+  return assignments
 }
 
-function buildWhy(game: Game, mood: Mood, referenceDate: Date, group: Game[]): string {
+function describeDimension(game: Game, assignment: DimensionAssignment, seed: number): string {
+  if (assignment.dimension === 'category') return describeCategory(game, assignment.comparative, seed)
+  if (assignment.dimension === 'playtime') return describePlaytime(game, assignment.comparative, seed)
+  return describeComplexity(game, assignment.comparative, seed)
+}
+
+// Solo fallback when there's nothing else in the set to compare against — describe
+// whichever trait is most notable for this game on its own.
+function buildSoloDistinguishingText(game: Game, seed: number): string {
+  if (game.complexity <= 2 || game.complexity >= 4) return describeComplexity(game, false, seed)
+  if (game.playtimeMinutes <= 45 || game.playtimeMinutes >= 120) return describePlaytime(game, false, seed)
+  return describeCategory(game, false, seed)
+}
+
+function buildPrimaryText(game: Game, mood: Mood, referenceDate: Date, seed: number): string {
   const range = playerRangeText(game)
-  const recency = describeRecency(game.lastPlayedDate, referenceDate)
-  const others = group.filter((other) => other.id !== game.id)
-  const distinguisher = buildDistinguishingClause(game, others)
 
   if (mood === 'familiar') {
-    return `Your highest-rated ${range} game among the ones you play often (${game.personalRating}/10, played ${game.playCount} times), but ${recency}. Plus, ${distinguisher}.`
+    const recency = describeRecency(game.lastPlayedDate, referenceDate, seed)
+    const options = [
+      `Your highest-rated ${range} game, rated ${game.personalRating}/10 after ${game.playCount} plays, though ${recency}`,
+      `You've rated this ${game.personalRating}/10 and played it ${game.playCount} times, but ${recency}`,
+      `Among your regulars for a ${range} game, this ${game.personalRating}/10 favorite has gone quiet — ${recency}`,
+    ]
+    return pick(options, seed)
   }
 
   if (mood === 'new') {
     if (game.playCount === 0) {
-      return `You've never tried this one, and it fits your group size — ${distinguisher}.`
+      const options = [
+        `You've never gotten this one to the table`,
+        `This is a fresh pick — zero plays so far`,
+        `Untouched so far — a clean slate`,
+      ]
+      return pick(options, seed)
     }
-    return `Only played ${game.playCount} time${game.playCount === 1 ? '' : 's'} so far — still fresh, and it fits your group size (rated ${game.personalRating}/10). Also, ${distinguisher}.`
+    const plays = `${game.playCount} play${game.playCount === 1 ? '' : 's'}`
+    const options = [
+      `Only ${plays} on record, so it's still mostly new territory`,
+      `You've barely touched this one — just ${plays} in — and it's rated ${game.personalRating}/10`,
+      `With just ${plays} so far, there's plenty left to discover`,
+    ]
+    return pick(options, seed)
   }
 
   // surprise
-  return `Rated ${game.personalRating}/10 — one of your best — but ${recency}. A genuine neglected-shelf pick, and ${distinguisher}.`
+  const recency = describeRecency(game.lastPlayedDate, referenceDate, seed)
+  const options = [
+    `Rated ${game.personalRating}/10 — one of your best — yet ${recency}`,
+    `This ${game.personalRating}/10 favorite has quietly sat on the shelf; ${recency}`,
+    `You loved this enough to rate it ${game.personalRating}/10, but ${recency}`,
+  ]
+  return pick(options, seed)
+}
+
+const CONNECTORS_PRIMARY_FIRST = [", and it's ", ' — ', "; it's "]
+const CONNECTORS_DISTINGUISHING_FIRST = [' — ', ', and ']
+
+function buildWhy(
+  game: Game,
+  mood: Mood,
+  referenceDate: Date,
+  assignment: DimensionAssignment | undefined,
+): WhySegment[] {
+  const seedBase = hashString(`${game.id}:${mood}`)
+
+  const primaryText = buildPrimaryText(game, mood, referenceDate, seedBase)
+  const distinguishingText = assignment
+    ? describeDimension(game, assignment, seedBase + 7)
+    : buildSoloDistinguishingText(game, seedBase + 7)
+  const distinguishingFirst = seedBase % 2 === 1
+
+  if (distinguishingFirst) {
+    const connector = pick(CONNECTORS_DISTINGUISHING_FIRST, seedBase + 3)
+    return [
+      { text: capitalize(distinguishingText), emphasis: true },
+      { text: `${connector}${lowerFirst(primaryText)}.` },
+    ]
+  }
+
+  const connector = pick(CONNECTORS_PRIMARY_FIRST, seedBase + 3)
+  return [
+    { text: `${primaryText}${connector}` },
+    { text: distinguishingText, emphasis: true },
+    { text: '.' },
+  ]
 }
 
 
@@ -180,9 +359,10 @@ export function recommend(
   }
 
   const topGames = sorted.slice(0, 3)
+  const distinguishers = assignDistinguishers(topGames)
   const recommendations = topGames.map((game) => ({
     game,
-    why: buildWhy(game, mood, referenceDate, topGames),
+    why: buildWhy(game, mood, referenceDate, distinguishers.get(game.id)),
   }))
 
   return { candidateCount: candidates.length, recommendations }

@@ -101,7 +101,17 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
                     {game.category} · {game.complexity}/5
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground">{why}</p>
+                <p className="text-sm text-muted-foreground">
+                  {why.map((segment, index) =>
+                    segment.emphasis ? (
+                      <strong key={index} className="font-semibold text-foreground">
+                        {segment.text}
+                      </strong>
+                    ) : (
+                      <span key={index}>{segment.text}</span>
+                    ),
+                  )}
+                </p>
               </button>
             ))}
           </div>
