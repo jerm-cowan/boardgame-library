@@ -62,7 +62,7 @@ Logic lives in `src/lib/recommend.ts`; dashboard KPI math lives in `src/lib/kpis
 **Ranking per mood:**
 - *Familiar favorite* — restricts to games at/above the pool's median play count ("frequently played"), then sorts by rating. The median is computed live from the candidate pool rather than a fixed threshold so it adapts as the collection and play history grow.
 - *Something new-to-us* — sorts by play count ascending (never-played first), tie-broken by rating. No rating floor, since the point is exposure, not quality.
-- *Surprise me* — restricts to games at/above the pool's average rating ("highly-rated"), then sorts by play count ascending. This is the deliberate "neglected shelf" pattern: good games you're not playing.
+- *Surprise me* — restricts to games at/above the pool's average rating ("highly-rated"), then sorts by play count ascending. This is the deliberate "neglected games" pattern: good games you're not playing.
 - All three fall back to the full candidate pool if the mood-specific filter (frequent/highly-rated) empties it out, so a small collection never returns zero results when candidates exist.
 
 **Why-line generation.** Each line combines two parts so it reads as a specific, non-generic sentence rather than a restated stat:

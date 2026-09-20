@@ -29,14 +29,12 @@ export default function StoryTakeaway({ spotlightGame }: StoryTakeawayProps) {
           Next time you're not sure what to play, try the "Surprise me" mood in Pick Today's Game —
           it's built to surface exactly these overlooked gems.
         </p>
-        <div className="rounded-lg bg-card p-4 text-center">
-          <Link
-            to="/dashboard"
-            className="inline-block rounded-md bg-popover px-4 py-2 text-sm font-medium hover:bg-hover"
-          >
-            Go pick today's game
-          </Link>
-        </div>
+        <Link
+          to="/dashboard"
+          className="block w-full rounded-md bg-foreground px-4 py-2 text-center text-sm font-semibold text-background hover:bg-foreground/90 md:w-fit md:self-start"
+        >
+          Go pick today's game
+        </Link>
       </div>
     </section>
   )

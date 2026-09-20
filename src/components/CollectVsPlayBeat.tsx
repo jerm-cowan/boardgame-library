@@ -91,12 +91,11 @@ export default function CollectVsPlayBeat({ shares, games }: CollectVsPlayBeatPr
         </p>
         <div className="grid gap-6 md:grid-cols-[2fr_3fr]">
           <div>
+            <h3 className="mb-4 text-xl font-semibold">Collection</h3>
             <CollectVsPlayChart shares={shares} highlighted={selected} onHighlightChange={setSelected} />
           </div>
           <div>
-            <div className="mb-4 flex h-10 items-center justify-center">
-              <h3 className="text-sm text-muted-foreground">Neglected shelf</h3>
-            </div>
+            <h3 className="mb-4 text-xl font-semibold">Neglected games</h3>
             <NeglectedShelf
               games={neglected}
               emptyMessage={

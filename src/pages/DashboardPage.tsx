@@ -49,20 +49,10 @@ export default function DashboardPage() {
         <button
           type="button"
           onClick={() => setIsAddFormOpen(true)}
-          className="shrink-0 rounded-md bg-popover px-4 py-2 text-sm font-medium hover:bg-hover"
+          className="shrink-0 rounded-md bg-foreground px-4 py-2 text-sm font-semibold text-background hover:bg-foreground/90"
         >
           Add a game
         </button>
-      </div>
-
-      <div className="mt-6">
-        <input
-          type="text"
-          placeholder="Search by title…"
-          value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
-          className="w-full max-w-sm rounded-md bg-popover px-3 py-2 text-sm focus:outline-none sm:w-72"
-        />
       </div>
 
       <div className="mt-6">
@@ -74,7 +64,12 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-6">
-        <FilterPanel filters={filters} onChange={setFilters} />
+        <FilterPanel
+          filters={filters}
+          onChange={setFilters}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+        />
       </div>
 
       <div className="mt-6">
