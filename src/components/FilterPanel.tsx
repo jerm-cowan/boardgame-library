@@ -90,8 +90,10 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
               type="button"
               onClick={() => update('categories', [])}
               aria-pressed={filters.categories.length === 0}
-              className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
-                filters.categories.length === 0 ? 'bg-hover text-foreground' : 'bg-popover text-muted-foreground hover:text-foreground'
+              className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                filters.categories.length === 0
+                  ? 'bg-foreground/10 text-foreground shadow-sm shadow-black/40'
+                  : 'bg-popover text-muted-foreground hover:text-foreground'
               }`}
             >
               All
@@ -120,18 +122,28 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
 
         <div className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Status</span>
-          <div className="flex overflow-hidden rounded-md bg-popover">
+          <div className="inline-flex gap-1 rounded-lg border border-border bg-surface p-1" role="group" aria-label="Status">
             <button
               type="button"
+              aria-pressed={!filters.neverPlayedOnly}
               onClick={() => update('neverPlayedOnly', false)}
-              className={`px-3 py-1.5 ${!filters.neverPlayedOnly ? 'bg-hover' : ''}`}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                !filters.neverPlayedOnly
+                  ? 'bg-foreground/10 text-foreground shadow-sm shadow-black/40'
+                  : 'text-muted-foreground hover:bg-foreground/5 hover:text-foreground'
+              }`}
             >
               All
             </button>
             <button
               type="button"
+              aria-pressed={filters.neverPlayedOnly}
               onClick={() => update('neverPlayedOnly', true)}
-              className={`px-3 py-1.5 ${filters.neverPlayedOnly ? 'bg-hover' : ''}`}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                filters.neverPlayedOnly
+                  ? 'bg-foreground/10 text-foreground shadow-sm shadow-black/40'
+                  : 'text-muted-foreground hover:bg-foreground/5 hover:text-foreground'
+              }`}
             >
               Never played
             </button>

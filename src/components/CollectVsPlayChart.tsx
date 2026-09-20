@@ -59,15 +59,17 @@ export default function CollectVsPlayChart({ shares, highlighted, onHighlightCha
 
   return (
     <div className="space-y-4">
-      <div className="inline-flex rounded-md bg-popover p-1" role="group" aria-label="Chart view">
+      <div className="inline-flex gap-1 rounded-lg border border-border bg-surface p-1" role="group" aria-label="Chart view">
         {(Object.keys(VIEW_LABELS) as ViewMode[]).map((mode) => (
           <button
             key={mode}
             type="button"
             aria-pressed={view === mode}
             onClick={() => setView(mode)}
-            className={`rounded px-3 py-1.5 text-sm transition-colors ${
-              view === mode ? 'bg-hover text-foreground' : 'text-muted-foreground hover:text-foreground'
+            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              view === mode
+                ? 'bg-foreground/10 text-foreground shadow-sm shadow-black/40'
+                : 'text-muted-foreground hover:bg-foreground/5 hover:text-foreground'
             }`}
           >
             {VIEW_LABELS[mode]}
