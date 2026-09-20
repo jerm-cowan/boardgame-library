@@ -20,7 +20,7 @@ export default function CollectionStoryPage() {
   const neglected = useMemo(() => getNeglectedShelf(games, 5), [games])
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
       <div className="mb-10">
         <h1 className="text-2xl font-semibold">Collection Story</h1>
         <p className="mt-2 text-muted-foreground">

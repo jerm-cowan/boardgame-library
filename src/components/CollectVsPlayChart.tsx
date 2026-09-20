@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { CategoryShare } from '../lib/story'
-import type { GameCategory } from '../types/game'
+import { GAME_CATEGORIES, type GameCategory } from '../types/game'
 import { CATEGORY_ACCENT, CATEGORY_ICON } from '../lib/categoryStyle'
 
 type ViewMode = 'owned' | 'played'
@@ -19,11 +19,13 @@ const VIEW_LABELS: Record<ViewMode, string> = {
 function BarRow({
   label,
   percent,
+  count,
   emphasized,
   striped,
 }: {
   label: string
   percent: number
+  count: number
   emphasized: boolean
   striped: boolean
 }) {
@@ -42,8 +44,8 @@ function BarRow({
           }}
         />
       </div>
-      <span className="w-10 shrink-0 text-right text-xs text-muted-foreground">
-        {Math.round(percent)}%
+      <span className="w-20 shrink-0 text-right text-xs text-muted-foreground">
+        {Math.round(percent)}% ({count})
       </span>
     </div>
   )
@@ -53,9 +55,10 @@ export default function CollectVsPlayChart({ shares, highlighted, onHighlightCha
   const [view, setView] = useState<ViewMode>('owned')
 
   const sorted = useMemo(() => {
-    const key = view === 'owned' ? 'collectionShare' : 'playShare'
-    return [...shares].sort((a, b) => b[key] - a[key])
-  }, [shares, view])
+    return [...shares].sort(
+      (a, b) => GAME_CATEGORIES.indexOf(a.category) - GAME_CATEGORIES.indexOf(b.category),
+    )
+  }, [shares])
 
   return (
     <div className="space-y-4">
@@ -108,12 +111,14 @@ export default function CollectVsPlayChart({ shares, highlighted, onHighlightCha
                 <BarRow
                   label="Owned"
                   percent={share.collectionShare}
+                  count={share.gameCount}
                   emphasized={view === 'owned'}
                   striped={false}
                 />
                 <BarRow
                   label="Played"
                   percent={share.playShare}
+                  count={share.totalPlays}
                   emphasized={view === 'played'}
                   striped
                 />

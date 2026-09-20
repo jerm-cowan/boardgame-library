@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import DashboardPage from './pages/DashboardPage'
 import CollectionStoryPage from './pages/CollectionStoryPage'
 
@@ -6,21 +6,41 @@ function NotFound() {
   return <Navigate to="/dashboard" replace />
 }
 
+const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
+  `border-b-2 pb-0.5 text-sm transition-colors ${
+    isActive
+      ? 'border-foreground font-medium text-foreground'
+      : 'border-transparent text-muted-foreground hover:text-foreground'
+  }`
+
+// Every page shares the same max-w-6xl content container, so the nav lines up with
+// (and resizes with) the page below it without needing to branch per route.
+function NavBar() {
+  return (
+    <nav className="border-b border-border bg-surface">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-4 sm:px-6">
+        <div className="flex items-center gap-4">
+          <span className="text-sm font-semibold tracking-wide text-foreground">Board Room</span>
+          <span className="h-4 w-px bg-border" aria-hidden="true" />
+        </div>
+        <div className="flex gap-5">
+          <NavLink to="/dashboard" className={navLinkClassName}>
+            Dashboard
+          </NavLink>
+          <NavLink to="/collection-story" className={navLinkClassName}>
+            Collection Story
+          </NavLink>
+        </div>
+      </div>
+    </nav>
+  )
+}
+
 function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-background text-foreground">
-        <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border bg-surface px-4 py-4 sm:px-6">
-          <span className="text-sm font-semibold tracking-wide text-foreground">Board Room</span>
-          <div className="flex gap-4">
-            <Link to="/dashboard" className="hover:text-foreground/80">
-              Dashboard
-            </Link>
-            <Link to="/collection-story" className="hover:text-foreground/80">
-              Collection Story
-            </Link>
-          </div>
-        </nav>
+        <NavBar />
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<DashboardPage />} />
