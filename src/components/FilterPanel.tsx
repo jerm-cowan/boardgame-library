@@ -6,6 +6,7 @@ import {
   type FilterState,
 } from '../types/game'
 import { CATEGORY_ACCENT, CATEGORY_ICON } from '../lib/categoryStyle'
+import NumberStepper from './NumberStepper'
 
 interface FilterPanelProps {
   filters: FilterState
@@ -32,37 +33,33 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
       <div className="flex flex-wrap items-end gap-4">
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Player count</span>
-          <input
-            type="number"
+          <NumberStepper
+            value={filters.playerCount}
+            onChange={(value) => update('playerCount', value)}
             min={1}
+            allowClear
             placeholder="Any"
-            value={filters.playerCount ?? ''}
-            onChange={(event) =>
-              update('playerCount', event.target.value === '' ? null : Number(event.target.value))
-            }
-            className="w-24 rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+            ariaLabel="player count"
           />
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Playtime (min)</span>
           <div className="flex items-center gap-2">
-            <input
-              type="number"
+            <NumberStepper
+              value={filters.playtimeMin}
+              onChange={(value) => update('playtimeMin', value ?? PLAYTIME_BOUNDS.min)}
               min={PLAYTIME_BOUNDS.min}
               max={filters.playtimeMax}
-              value={filters.playtimeMin}
-              onChange={(event) => update('playtimeMin', Number(event.target.value))}
-              className="w-20 rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+              ariaLabel="minimum playtime"
             />
             <span className="text-muted-foreground">to</span>
-            <input
-              type="number"
+            <NumberStepper
+              value={filters.playtimeMax}
+              onChange={(value) => update('playtimeMax', value ?? PLAYTIME_BOUNDS.max)}
               min={filters.playtimeMin}
               max={PLAYTIME_BOUNDS.max}
-              value={filters.playtimeMax}
-              onChange={(event) => update('playtimeMax', Number(event.target.value))}
-              className="w-20 rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+              ariaLabel="maximum playtime"
             />
           </div>
         </label>

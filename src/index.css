@@ -24,3 +24,14 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
 }
+
+/* Hide native number spinner arrows — replaced by NumberStepper's own +/- buttons. */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner {
+  -moz-appearance: textfield;
+}

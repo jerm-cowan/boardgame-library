@@ -7,6 +7,7 @@ import {
   type AudienceSelection,
   type Mood,
 } from '../lib/recommend'
+import NumberStepper from './NumberStepper'
 
 interface PickTonightWidgetProps {
   games: Game[]
@@ -38,13 +39,12 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
       <div className="mt-5 flex flex-wrap items-end gap-4">
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Group size</span>
-          <input
-            type="number"
+          <NumberStepper
+            value={groupSize}
+            onChange={(value) => setGroupSize(value ?? 1)}
             min={1}
             max={12}
-            value={groupSize}
-            onChange={(event) => setGroupSize(Math.max(1, Number(event.target.value) || 1))}
-            className="w-24 rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+            ariaLabel="group size"
           />
         </label>
 

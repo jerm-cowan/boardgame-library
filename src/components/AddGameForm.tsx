@@ -7,6 +7,7 @@ import {
   type GameCategory,
 } from '../types/game'
 import { AUDIENCE_LABELS } from '../lib/recommend'
+import NumberStepper from './NumberStepper'
 
 const AUDIENCE_OPTIONS: GameAudience[] = ['family', 'adults', 'mixed']
 
@@ -109,37 +110,37 @@ export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
           <div className="flex gap-4">
             <label className="flex flex-1 flex-col gap-1 text-sm">
               <span className="text-muted-foreground">Min players</span>
-              <input
+              <NumberStepper
                 required
-                type="number"
+                value={draft.playerMin === '' ? null : Number(draft.playerMin)}
+                onChange={(value) => update('playerMin', value === null ? '' : String(value))}
                 min={1}
-                value={draft.playerMin}
-                onChange={(event) => update('playerMin', event.target.value)}
-                className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+                allowClear
+                ariaLabel="minimum players"
               />
             </label>
             <label className="flex flex-1 flex-col gap-1 text-sm">
               <span className="text-muted-foreground">Max players</span>
-              <input
+              <NumberStepper
                 required
-                type="number"
+                value={draft.playerMax === '' ? null : Number(draft.playerMax)}
+                onChange={(value) => update('playerMax', value === null ? '' : String(value))}
                 min={1}
-                value={draft.playerMax}
-                onChange={(event) => update('playerMax', event.target.value)}
-                className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+                allowClear
+                ariaLabel="maximum players"
               />
             </label>
           </div>
 
           <label className="flex flex-col gap-1 text-sm">
             <span className="text-muted-foreground">Playtime (minutes)</span>
-            <input
+            <NumberStepper
               required
-              type="number"
+              value={draft.playtimeMinutes === '' ? null : Number(draft.playtimeMinutes)}
+              onChange={(value) => update('playtimeMinutes', value === null ? '' : String(value))}
               min={1}
-              value={draft.playtimeMinutes}
-              onChange={(event) => update('playtimeMinutes', event.target.value)}
-              className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+              allowClear
+              ariaLabel="playtime in minutes"
             />
           </label>
 
