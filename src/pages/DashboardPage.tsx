@@ -19,7 +19,7 @@ function matchesFilters(game: Game, filters: FilterState): boolean {
     return false
   }
   if (game.complexity > filters.maxComplexity) return false
-  if (filters.category !== 'All' && game.category !== filters.category) return false
+  if (filters.categories.length > 0 && !filters.categories.includes(game.category)) return false
   if (filters.neverPlayedOnly && game.playCount !== 0) return false
   return true
 }

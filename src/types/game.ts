@@ -32,7 +32,8 @@ export interface FilterState {
   playtimeMin: number
   playtimeMax: number
   maxComplexity: number
-  category: GameCategory | 'All'
+  // Empty array means no category filter applied (all categories shown).
+  categories: GameCategory[]
   neverPlayedOnly: boolean
 }
 
@@ -44,6 +45,6 @@ export const DEFAULT_FILTERS: FilterState = {
   playtimeMin: PLAYTIME_BOUNDS.min,
   playtimeMax: PLAYTIME_BOUNDS.max,
   maxComplexity: COMPLEXITY_BOUNDS.max,
-  category: 'All',
+  categories: [],
   neverPlayedOnly: false,
 }

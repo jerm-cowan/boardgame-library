@@ -17,6 +17,16 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
     onChange({ ...filters, [key]: value })
   }
 
+  function toggleCategory(category: FilterState['categories'][number]) {
+    const isActive = filters.categories.includes(category)
+    update(
+      'categories',
+      isActive
+        ? filters.categories.filter((c) => c !== category)
+        : [...filters.categories, category],
+    )
+  }
+
   return (
     <div className="rounded-lg bg-card p-4">
       <div className="flex flex-wrap items-end gap-4">
@@ -77,25 +87,25 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
 
         <div className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Category</span>
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by category">
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by category (select any number)">
             <button
               type="button"
-              onClick={() => update('category', 'All')}
-              aria-pressed={filters.category === 'All'}
+              onClick={() => update('categories', [])}
+              aria-pressed={filters.categories.length === 0}
               className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
-                filters.category === 'All' ? 'bg-hover text-foreground' : 'bg-popover text-muted-foreground hover:text-foreground'
+                filters.categories.length === 0 ? 'bg-hover text-foreground' : 'bg-popover text-muted-foreground hover:text-foreground'
               }`}
             >
               All
             </button>
             {GAME_CATEGORIES.map((category) => {
               const Icon = CATEGORY_ICON[category]
-              const isActive = filters.category === category
+              const isActive = filters.categories.includes(category)
               return (
                 <button
                   key={category}
                   type="button"
-                  onClick={() => update('category', category)}
+                  onClick={() => toggleCategory(category)}
                   aria-pressed={isActive}
                   style={isActive ? { boxShadow: `inset 0 0 0 1px ${CATEGORY_ACCENT[category]}` } : undefined}
                   className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors ${
