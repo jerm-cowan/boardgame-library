@@ -8,6 +8,8 @@ import {
   type SortingState,
 } from '@tanstack/react-table'
 import type { Game } from '../types/game'
+import CategoryBadge from './CategoryBadge'
+import { CATEGORY_ACCENT } from '../lib/categoryStyle'
 
 const columnHelper = createColumnHelper<Game>()
 
@@ -25,7 +27,10 @@ const columns = [
     header: 'Title',
     cell: (info) => <span className="font-medium">{info.getValue()}</span>,
   }),
-  columnHelper.accessor('category', { header: 'Category' }),
+  columnHelper.accessor('category', {
+    header: 'Category',
+    cell: (info) => <CategoryBadge category={info.getValue()} />,
+  }),
   columnHelper.display({
     id: 'playerRange',
     header: 'Players',
@@ -87,8 +92,8 @@ export default function GameTable({
   const rows = table.getRowModel().rows
 
   return (
-    <div className="overflow-hidden rounded-lg bg-card">
-      <table className="w-full text-left">
+    <div className="overflow-x-auto rounded-lg bg-card">
+      <table className="w-full min-w-[720px] text-left">
         <thead className="bg-popover">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -140,6 +145,7 @@ export default function GameTable({
                     onSelectGame(row.original)
                   }
                 }}
+                style={{ borderLeft: `3px solid ${CATEGORY_ACCENT[row.original.category]}` }}
                 className="cursor-pointer bg-card hover:bg-hover focus:outline-none focus:bg-hover"
               >
                 {row.getVisibleCells().map((cell) => (

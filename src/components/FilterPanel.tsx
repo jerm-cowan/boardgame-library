@@ -5,6 +5,7 @@ import {
   COMPLEXITY_BOUNDS,
   type FilterState,
 } from '../types/game'
+import { CATEGORY_ACCENT, CATEGORY_ICON } from '../lib/categoryStyle'
 
 interface FilterPanelProps {
   filters: FilterState
@@ -74,23 +75,40 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-sm">
+        <div className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Category</span>
-          <select
-            value={filters.category}
-            onChange={(event) =>
-              update('category', event.target.value as FilterState['category'])
-            }
-            className="w-32 rounded-md bg-popover px-2 py-1.5 focus:outline-none"
-          >
-            <option value="All">All</option>
-            {GAME_CATEGORIES.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </label>
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by category">
+            <button
+              type="button"
+              onClick={() => update('category', 'All')}
+              aria-pressed={filters.category === 'All'}
+              className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
+                filters.category === 'All' ? 'bg-hover text-foreground' : 'bg-popover text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              All
+            </button>
+            {GAME_CATEGORIES.map((category) => {
+              const Icon = CATEGORY_ICON[category]
+              const isActive = filters.category === category
+              return (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => update('category', category)}
+                  aria-pressed={isActive}
+                  style={isActive ? { boxShadow: `inset 0 0 0 1px ${CATEGORY_ACCENT[category]}` } : undefined}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-colors ${
+                    isActive ? 'bg-hover text-foreground' : 'bg-popover text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <Icon size={14} strokeWidth={2} style={{ color: CATEGORY_ACCENT[category] }} aria-hidden="true" />
+                  {category}
+                </button>
+              )
+            })}
+          </div>
+        </div>
 
         <div className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Status</span>

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { CategoryShare } from '../lib/story'
 import type { GameCategory } from '../types/game'
+import { CATEGORY_ACCENT, CATEGORY_ICON } from '../lib/categoryStyle'
 
 type ViewMode = 'owned' | 'played'
 
@@ -78,6 +79,8 @@ export default function CollectVsPlayChart({ shares, highlighted, onHighlightCha
         {sorted.map((share) => {
           const isHighlighted = highlighted === share.category
           const isDimmed = highlighted !== null && !isHighlighted
+          const Icon = CATEGORY_ICON[share.category]
+          const color = CATEGORY_ACCENT[share.category]
           return (
             <button
               key={share.category}
@@ -87,13 +90,15 @@ export default function CollectVsPlayChart({ shares, highlighted, onHighlightCha
                 isHighlighted ? ' Highlighted.' : ''
               }`}
               onClick={() => onHighlightChange(highlighted === share.category ? null : share.category)}
-              className={`w-full cursor-pointer rounded-lg border p-3 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground/60 ${
+              style={{ borderLeft: `3px solid ${color}` }}
+              className={`w-full cursor-pointer rounded-lg border p-3 pl-3 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground/60 ${
                 isHighlighted
-                  ? 'border-border bg-popover'
-                  : 'border-transparent bg-card hover:border-border hover:bg-popover/70'
+                  ? 'border-y-border border-r-border bg-popover'
+                  : 'border-y-transparent border-r-transparent bg-card hover:border-y-border hover:border-r-border hover:bg-popover/70'
               } ${isDimmed ? 'opacity-40' : 'opacity-100'}`}
             >
               <div className="mb-1.5 flex items-center gap-1.5 text-sm font-medium">
+                <Icon size={14} strokeWidth={2} style={{ color }} aria-hidden="true" />
                 {share.category}
                 {isHighlighted && <span className="text-xs font-normal text-muted-foreground">(selected)</span>}
               </div>

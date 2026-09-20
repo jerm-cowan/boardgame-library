@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import type { Game } from '../types/game'
+import CategoryBadge from './CategoryBadge'
+import { CATEGORY_ACCENT } from '../lib/categoryStyle'
 
 interface GameDetailDrawerProps {
   game: Game | null
@@ -28,7 +30,6 @@ export default function GameDetailDrawer({ game, onClose }: GameDetailDrawerProp
   if (!game) return null
 
   const fields: [string, string][] = [
-    ['Category', game.category],
     [
       'Players',
       game.playerMin === game.playerMax
@@ -50,9 +51,17 @@ export default function GameDetailDrawer({ game, onClose }: GameDetailDrawerProp
         onClick={onClose}
         className="absolute inset-0 bg-black/60"
       />
-      <aside className="relative flex h-full w-full max-w-md flex-col overflow-y-auto bg-surface p-6 shadow-xl">
+      <aside
+        style={{ borderLeft: `3px solid ${CATEGORY_ACCENT[game.category]}` }}
+        className="relative flex h-full w-full max-w-md flex-col overflow-y-auto bg-surface p-6 shadow-xl"
+      >
         <div className="flex items-start justify-between gap-4">
-          <h2 className="text-xl font-semibold">{game.title}</h2>
+          <div>
+            <h2 className="text-xl font-semibold">{game.title}</h2>
+            <div className="mt-1">
+              <CategoryBadge category={game.category} className="text-sm text-muted-foreground" />
+            </div>
+          </div>
           <button
             type="button"
             onClick={onClose}
