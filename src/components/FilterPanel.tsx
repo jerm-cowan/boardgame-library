@@ -122,7 +122,7 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
 
         <div className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Status</span>
-          <div className="inline-flex gap-1 rounded-lg border border-border bg-surface p-1" role="group" aria-label="Status">
+          <div className="inline-flex gap-1" role="group" aria-label="Status">
             <button
               type="button"
               aria-pressed={!filters.neverPlayedOnly}

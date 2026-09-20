@@ -59,7 +59,7 @@ export default function CollectVsPlayChart({ shares, highlighted, onHighlightCha
 
   return (
     <div className="space-y-4">
-      <div className="inline-flex gap-1 rounded-lg border border-border bg-surface p-1" role="group" aria-label="Chart view">
+      <div className="inline-flex gap-1" role="group" aria-label="Chart view">
         {(Object.keys(VIEW_LABELS) as ViewMode[]).map((mode) => (
           <button
             key={mode}
