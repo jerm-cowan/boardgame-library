@@ -95,7 +95,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
                 onClick={() => onSelectGame(game)}
                 className="flex flex-col gap-1 rounded-lg bg-popover p-4 text-left transition hover:brightness-110"
               >
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="font-medium">{game.title}</span>
                   <span className="shrink-0 text-xs text-muted-foreground">
                     {game.category} · {game.complexity}/5
