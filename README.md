@@ -1,4 +1,6 @@
-# Board Game Library
+# Board Room
+
+**Live deployment:** _add your Vercel URL here once deployed, e.g. `https://board-room.vercel.app`_
 
 A single-repo Protogen capstone combining a **P301 operational dashboard** and a **P302 interactive data story**, sharing one fabricated dataset, visual system, and codebase.
 
@@ -13,6 +15,7 @@ See [BRIEF.md](./BRIEF.md) for the full product brief (persona, scope, data mode
 - Tailwind CSS v4 (dark theme via CSS variable tokens, see `src/index.css`)
 - React Router
 - TanStack Table (headless, for the collection grid)
+- Lucide (line icons for category iconography)
 
 ## Getting started
 
@@ -20,6 +23,29 @@ See [BRIEF.md](./BRIEF.md) for the full product brief (persona, scope, data mode
 npm install
 npm run dev
 ```
+
+Open the printed local URL (typically `http://localhost:5173`) and visit `/dashboard` or `/collection-story`.
+
+To build and preview a production bundle locally:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Visual system
+
+Each game category (Strategy, Family, Party, Cooperative, Abstract) has one accent color and one Lucide line icon, defined in `src/lib/categoryStyle.ts`. These are applied sparingly — a left-border strip or dot on table rows, filter chips, category badges, and the story's chart legend — never as full background fills, to keep the dark, data-table-first look from BRIEF.md intact.
+
+## Deployment (Vercel)
+
+This is a static Vite build with **no environment variables or backend** required (the dataset is a bundled JSON file). To deploy:
+
+1. Push this repo to GitHub (or your Git provider of choice).
+2. In Vercel, "Add New Project" → import the repo.
+3. Framework preset: **Vite**. Build command: `npm run build`. Output directory: `dist`. (Vercel usually auto-detects all three.)
+4. No environment variables needed — deploy as-is.
+5. Optional: if you want the deployment private during grading, enable **Vercel Authentication / password protection** under the project's Settings → Deployment Protection. This is a dashboard-only setting and can't be configured from the repo.
 
 ## Data
 
