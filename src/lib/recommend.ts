@@ -6,12 +6,12 @@ export type AudienceSelection = GameAudience
 
 export const MOOD_LABELS: Record<Mood, string> = {
   familiar: 'Familiar favorite',
-  new: 'Something new-to-us',
+  new: 'Something new',
   surprise: 'Surprise me',
 }
 
 export const AUDIENCE_LABELS: Record<AudienceSelection, string> = {
-  family: 'Family / kids-friendly',
+  family: 'Kid friendly',
   adults: 'Adults only',
   mixed: 'Mixed group',
 }

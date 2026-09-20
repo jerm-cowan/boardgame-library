@@ -9,6 +9,7 @@ import {
 } from '../lib/recommend'
 import NumberStepper from './NumberStepper'
 import Select from './Select'
+import { CATEGORY_ACCENT } from '../lib/categoryStyle'
 
 interface PickTonightWidgetProps {
   games: Game[]
@@ -22,6 +23,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
   const [groupSize, setGroupSize] = useState(4)
   const [audience, setAudience] = useState<AudienceSelection>('mixed')
   const [mood, setMood] = useState<Mood>('familiar')
+  const [hasCustomized, setHasCustomized] = useState(false)
 
   const result = useMemo(
     () => recommend(games, groupSize, audience, mood),
@@ -42,7 +44,10 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
           <span className="text-muted-foreground">Group size</span>
           <NumberStepper
             value={groupSize}
-            onChange={(value) => setGroupSize(value ?? 1)}
+            onChange={(value) => {
+              setGroupSize(value ?? 1)
+              setHasCustomized(true)
+            }}
             min={1}
             max={12}
             ariaLabel="group size"
@@ -53,7 +58,10 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
           <span className="text-muted-foreground">Who's playing</span>
           <Select
             value={audience}
-            onChange={(event) => setAudience(event.target.value as AudienceSelection)}
+            onChange={(event) => {
+              setAudience(event.target.value as AudienceSelection)
+              setHasCustomized(true)
+            }}
           >
             {AUDIENCE_OPTIONS.map((option) => (
               <option key={option} value={option}>
@@ -65,7 +73,13 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
 
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Mood</span>
-          <Select value={mood} onChange={(event) => setMood(event.target.value as Mood)}>
+          <Select
+            value={mood}
+            onChange={(event) => {
+              setMood(event.target.value as Mood)
+              setHasCustomized(true)
+            }}
+          >
             {MOOD_OPTIONS.map((option) => (
               <option key={option} value={option}>
                 {MOOD_LABELS[option]}
@@ -74,6 +88,13 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
           </Select>
         </label>
       </div>
+
+      {!hasCustomized && (
+        <p className="mt-3 text-[11px] italic text-muted-foreground/60">
+          Showing defaults (4 players · mixed group · familiar favorite) — adjust above to
+          personalize.
+        </p>
+      )}
 
       <div className="mt-6">
         {result.candidateCount === 0 ? (
@@ -93,7 +114,12 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="font-medium">{game.title}</span>
-                  <span className="shrink-0 text-xs text-muted-foreground">
+                  <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{ backgroundColor: CATEGORY_ACCENT[game.category] }}
+                      aria-hidden="true"
+                    />
                     {game.category} · {game.complexity}/5
                   </span>
                 </div>

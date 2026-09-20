@@ -9,7 +9,6 @@ import {
 } from '@tanstack/react-table'
 import type { Game } from '../types/game'
 import CategoryBadge from './CategoryBadge'
-import { CATEGORY_ACCENT } from '../lib/categoryStyle'
 
 const columnHelper = createColumnHelper<Game>()
 
@@ -145,7 +144,6 @@ export default function GameTable({
                     onSelectGame(row.original)
                   }
                 }}
-                style={{ borderLeft: `3px solid ${CATEGORY_ACCENT[row.original.category]}` }}
                 className="cursor-pointer bg-card hover:bg-hover focus:outline-none focus:bg-hover"
               >
                 {row.getVisibleCells().map((cell) => (

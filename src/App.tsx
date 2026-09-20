@@ -1,9 +1,21 @@
-import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import DashboardPage from './pages/DashboardPage'
 import CollectionStoryPage from './pages/CollectionStoryPage'
 
 function NotFound() {
   return <Navigate to="/dashboard" replace />
+}
+
+// Route changes don't reset scroll position by default in react-router.
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
 }
 
 const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
@@ -40,6 +52,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-background text-foreground">
+        <ScrollToTop />
         <NavBar />
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />

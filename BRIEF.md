@@ -61,7 +61,7 @@ One fabricated dataset with two parts:
 - **Behavioral data** — play count, last played date, rating (drives the contradiction/neglected-shelf story and the recommender's "why" lines)
 
 ## Out of Scope for MVP
-Cover images/photos · real BoardGameGeek integration · barcode scanning · authentication · cloud persistence · social features · purchase recommendations · marketplace functionality · AI-generated art · complex NL querying · fully dynamic AI-written stories · real-time collaboration · dashboard-filter-to-story handoff · time-period selector in story
+Cover images/photos · barcode scanning · authentication · cloud persistence · social features · purchase recommendations · marketplace functionality · AI-generated art · complex querying · fully dynamic AI-written stories · real-time collaboration · dashboard-filter-to-story handoff · time-period selector in story
 
 ## Stretch / Post-MVP Enhancements
 Ideas surfaced during Phase 3 work, explicitly deferred and not part of current phase scope:
