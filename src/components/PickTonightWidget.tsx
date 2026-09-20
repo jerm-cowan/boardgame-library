@@ -31,7 +31,8 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
   )
 
   return (
-    <section className="rounded-xl border border-border bg-card p-4 shadow-lg shadow-black/20">
+    <div className="shimmer-border rounded-xl shadow-lg shadow-black/20">
+      <section className="rounded-[calc(0.75rem-1.5px)] bg-card p-4">
       <div>
         <h2 className="text-xl font-semibold">Pick Today's Game</h2>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -139,6 +140,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
           </div>
         )}
       </div>
-    </section>
+      </section>
+    </div>
   )
 }

@@ -35,3 +35,70 @@ body {
 .no-spinner {
   -moz-appearance: textfield;
 }
+
+/*
+ * Rainbow shimmer border for the flagship "Pick Today's Game" card.
+ * Colors match the category legend order (Strategy → Family → Party → Cooperative → Abstract).
+ * The gradient is painted directly on the card's own box (inset: 0) so it always wraps the
+ * full perimeter with no gaps, regardless of the card's aspect ratio. The "from" angle is
+ * animated (via @property) rather than rotating a transform, which keeps the ring gapless
+ * at every frame while it slowly spins clockwise. A slow opacity pulse layers on top.
+ */
+@property --shimmer-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.shimmer-border {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 1.5px;
+}
+
+.shimmer-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: conic-gradient(
+    from var(--shimmer-angle),
+    #5b8def,
+    #6bbf6b,
+    #f2a94a,
+    #4fbdba,
+    #a78bfa,
+    #5b8def
+  );
+  animation:
+    shimmer-rotate 14s linear infinite,
+    shimmer-pulse 5s ease-in-out infinite;
+}
+
+.shimmer-border > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes shimmer-rotate {
+  to {
+    --shimmer-angle: 360deg;
+  }
+}
+
+@keyframes shimmer-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.05;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-border::before {
+    animation: none;
+  }
+}

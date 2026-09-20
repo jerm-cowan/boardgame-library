@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
+import { LayoutPanelTop } from 'lucide-react'
 import DashboardPage from './pages/DashboardPage'
 import CollectionStoryPage from './pages/CollectionStoryPage'
 
@@ -32,7 +33,10 @@ function NavBar() {
     <nav className="border-b border-border bg-surface">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-4 sm:px-6">
         <div className="flex items-center gap-4">
-          <span className="text-sm font-semibold tracking-wide text-foreground">Board Room</span>
+          <span className="flex items-center gap-2 text-sm font-semibold tracking-wide text-foreground">
+            <LayoutPanelTop className="h-5 w-5" aria-hidden="true" />
+            Board Room
+          </span>
           <span className="h-4 w-px bg-border" aria-hidden="true" />
         </div>
         <div className="flex gap-5">
