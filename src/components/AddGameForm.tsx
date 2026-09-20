@@ -97,7 +97,7 @@ export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
             <select
               value={draft.category}
               onChange={(event) => update('category', event.target.value as GameCategory)}
-              className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+              className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
             >
               {GAME_CATEGORIES.map((category) => (
                 <option key={category} value={category}>
@@ -150,7 +150,7 @@ export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
               required
               value={draft.complexity}
               onChange={(event) => update('complexity', event.target.value)}
-              className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+              className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
             >
               <option value="" disabled>
                 Select complexity
@@ -171,7 +171,7 @@ export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
             <select
               value={draft.audience}
               onChange={(event) => update('audience', event.target.value as GameAudience)}
-              className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+              className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
             >
               {AUDIENCE_OPTIONS.map((option) => (
                 <option key={option} value={option}>

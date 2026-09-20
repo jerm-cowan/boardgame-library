@@ -69,7 +69,7 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
           <select
             value={filters.maxComplexity}
             onChange={(event) => update('maxComplexity', Number(event.target.value))}
-            className="w-24 rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+            className="w-24 rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
           >
             {Array.from(
               { length: COMPLEXITY_BOUNDS.max - COMPLEXITY_BOUNDS.min + 1 },

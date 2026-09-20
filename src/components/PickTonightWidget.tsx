@@ -53,7 +53,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
           <select
             value={audience}
             onChange={(event) => setAudience(event.target.value as AudienceSelection)}
-            className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+            className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
           >
             {AUDIENCE_OPTIONS.map((option) => (
               <option key={option} value={option}>
@@ -68,7 +68,7 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
           <select
             value={mood}
             onChange={(event) => setMood(event.target.value as Mood)}
-            className="rounded-md bg-popover px-2 py-1.5 focus:outline-none"
+            className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
           >
             {MOOD_OPTIONS.map((option) => (
               <option key={option} value={option}>
