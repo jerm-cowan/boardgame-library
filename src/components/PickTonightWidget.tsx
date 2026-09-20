@@ -8,6 +8,7 @@ import {
   type Mood,
 } from '../lib/recommend'
 import NumberStepper from './NumberStepper'
+import Select from './Select'
 
 interface PickTonightWidgetProps {
   games: Game[]
@@ -50,32 +51,27 @@ export default function PickTonightWidget({ games, onSelectGame }: PickTonightWi
 
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Who's playing</span>
-          <select
+          <Select
             value={audience}
             onChange={(event) => setAudience(event.target.value as AudienceSelection)}
-            className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
           >
             {AUDIENCE_OPTIONS.map((option) => (
               <option key={option} value={option}>
                 {AUDIENCE_LABELS[option]}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Mood</span>
-          <select
-            value={mood}
-            onChange={(event) => setMood(event.target.value as Mood)}
-            className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
-          >
+          <Select value={mood} onChange={(event) => setMood(event.target.value as Mood)}>
             {MOOD_OPTIONS.map((option) => (
               <option key={option} value={option}>
                 {MOOD_LABELS[option]}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
 

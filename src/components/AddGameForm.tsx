@@ -8,6 +8,7 @@ import {
 } from '../types/game'
 import { AUDIENCE_LABELS } from '../lib/recommend'
 import NumberStepper from './NumberStepper'
+import Select from './Select'
 
 const AUDIENCE_OPTIONS: GameAudience[] = ['family', 'adults', 'mixed']
 
@@ -94,17 +95,16 @@ export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
 
           <label className="flex flex-col gap-1 text-sm">
             <span className="text-muted-foreground">Category</span>
-            <select
+            <Select
               value={draft.category}
               onChange={(event) => update('category', event.target.value as GameCategory)}
-              className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
             >
               {GAME_CATEGORIES.map((category) => (
                 <option key={category} value={category}>
                   {category}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
 
           <div className="flex gap-4">
@@ -146,11 +146,10 @@ export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
 
           <label className="flex flex-col gap-1 text-sm">
             <span className="text-muted-foreground">Complexity</span>
-            <select
+            <Select
               required
               value={draft.complexity}
               onChange={(event) => update('complexity', event.target.value)}
-              className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
             >
               <option value="" disabled>
                 Select complexity
@@ -163,22 +162,21 @@ export default function AddGameForm({ onAdd, onClose }: AddGameFormProps) {
                   {value} / 5
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
 
           <label className="flex flex-col gap-1 text-sm">
             <span className="text-muted-foreground">Best fit for</span>
-            <select
+            <Select
               value={draft.audience}
               onChange={(event) => update('audience', event.target.value as GameAudience)}
-              className="rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
             >
               {AUDIENCE_OPTIONS.map((option) => (
                 <option key={option} value={option}>
                   {AUDIENCE_LABELS[option]}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
 
           <div className="mt-2 flex justify-end gap-3">

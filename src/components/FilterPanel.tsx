@@ -7,6 +7,7 @@ import {
 } from '../types/game'
 import { CATEGORY_ACCENT, CATEGORY_ICON } from '../lib/categoryStyle'
 import NumberStepper from './NumberStepper'
+import Select from './Select'
 
 interface FilterPanelProps {
   filters: FilterState
@@ -66,10 +67,10 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
 
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-muted-foreground">Max complexity</span>
-          <select
+          <Select
+            wrapperClassName="w-24"
             value={filters.maxComplexity}
             onChange={(event) => update('maxComplexity', Number(event.target.value))}
-            className="w-24 rounded-md bg-popover py-1.5 pl-2 pr-8 focus:outline-none"
           >
             {Array.from(
               { length: COMPLEXITY_BOUNDS.max - COMPLEXITY_BOUNDS.min + 1 },
@@ -79,7 +80,7 @@ export default function FilterPanel({ filters, onChange }: FilterPanelProps) {
                 {value} / 5
               </option>
             ))}
-          </select>
+          </Select>
         </label>
 
         <div className="flex flex-col gap-1 text-sm">
