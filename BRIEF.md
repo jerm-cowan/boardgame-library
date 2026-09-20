@@ -1,4 +1,4 @@
-# BRIEF.md — Personal Board Game Library
+# BRIEF.md — Board Room
 
 ## Project
 A single-repo Protogen capstone combining a **P301 operational dashboard** and a **P302 interactive data story**, sharing one fabricated dataset, visual system, and codebase. Two distinct routes, one product.
